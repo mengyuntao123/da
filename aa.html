@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p><button class="jian">-</button> <input type="text" value="1">
+    <button class="add">+</button><span>价格:</span><i>190</i></span><button class="remo">删除</button></p>
+<p><button class="jian">-</button> <input type="text" value="1">
+    <button class="add">+</button><span>价格:</span><i>8.5</i><button class="remo">删除</button> </p>
+<p><button class="jian">-</button> <input type="text" value="1">
+    <button class="add">+</button><span>价格:</span><i>758</i><button class="remo">删除</button> </p>
+    <span>总计<i class="i1">0</i></span>
+    <span>总价格<i class="i2">0</i></span>
+</body>
+<script src="js/jquery-3.4.0.min.js"></script>
+<script>
+
+    var content={
+       toprice:0,
+       tonum:0,
+       showpri:[]
+    }
+var $pp=$("p");
+$pp.each(function(index,item){//循环遍历每个p元素
+    console.log(index,item);
+    var p=$(item).find("i").text()-0;//单价
+    var n=$(item).find("input").val()-0;//数量
+   content.showpri.push({//插入到show数组中
+       num:n,
+       price:p,
+       topic:n*p
+   })
+})
+
+$(".add").on("click",function(){
+    var c_index=$(this).parent("p").index();//得到下标
+    var tnum=++content.showpri[c_index].num;//每次加一
+     show_data(c_index,tnum);
+})
+$(".jian").on("click",function(){
+    // alert("aaaa")
+    var c_index=$(this).parent("p").index();
+    var tnum=content.showpri[c_index].num;
+    if(tnum<=1){
+      return false
+    }
+    --tnum
+    show_data(c_index,tnum);
+})
+// 修改数据
+function show_data(index,num){
+       if(index>-1){
+       content.showpri[index].num=num;
+       content.showpri[index].topic=num*content.showpri[index].price;
+       }
+       
+       content.tonum=0;
+       content.toprice=0;
+   //遍历content.showpri数组
+     $.each(content.showpri,function(index,item){
+        //  console.log(index,item);
+       content.toprice+=item.topic;
+       content.tonum+=item.num;
+   })
+      
+       show_html(index)
+}
+ 
+//渲染页面
+
+function show_html(index){
+    if(index>-1){
+        $("p").eq(index).find("i").text( content.showpri[index].topic)
+        $("p").eq(index).find("input").val(content.showpri[index].num)
+    }
+ 
+ $(".i1").text(content.tonum)
+ $(".i2"). text( content.toprice)
+}
+
+$(".remo").on("click",function(){
+    var c_index=$(this).parent("p").index();
+    $(this).parent("p").remove();
+    content.showpri.splice(c_index,1);
+    show_data(-1);
+})
+
+
+
+</script>
+</html>
